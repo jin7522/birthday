@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Young Kim Happy Birthday 🎂</title>
-<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Noto+Serif+KR:wght@700;900&family=Jua&display=swap" rel="stylesheet">
 <style>
   :root {
     --pink: #ff6b9d;
@@ -17,6 +17,7 @@
     --white: #ffffff;
     --dark: #2d2d2d;
     --gray: #888;
+    --red: #e8192c;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -47,13 +48,12 @@
   }
   @keyframes slideUp { to { opacity:1; transform:translateY(0); } }
 
-  /* Browser bar */
   .browser-bar {
     background:#f0f0f0; border-bottom:2px solid #e0e0e0;
     padding:12px 20px; display:flex; align-items:center; gap:12px;
-    cursor: pointer; user-select: none;
+    cursor:pointer; user-select:none;
   }
-  .browser-bar:hover { background: #e8e8e8; }
+  .browser-bar:hover { background:#e8e8e8; }
   .dots { display:flex; gap:7px; }
   .dot { width:13px; height:13px; border-radius:50%; }
   .dot.r{background:#ff5f57} .dot.y{background:#febc2e} .dot.g{background:#28c840}
@@ -63,25 +63,18 @@
     display:flex; align-items:center; gap:6px;
   }
   .url-pink { color:var(--pink); font-weight:600; }
-  .toggle-hint {
-    font-size: 10px; color: #bbb; letter-spacing: 1px;
-    white-space: nowrap;
-  }
+  .toggle-hint { font-size:10px; color:#bbb; letter-spacing:1px; white-space:nowrap; }
 
-  /* Code editor - hidden by default */
   .editor {
-    display: grid; grid-template-columns:48px 1fr;
+    display:grid; grid-template-columns:48px 1fr;
     background:#fafafa; border-bottom:2px solid #f0f0f0;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.8s cubic-bezier(0.16,1,0.3,1);
+    max-height:0; overflow:hidden;
+    transition:max-height 0.8s cubic-bezier(0.16,1,0.3,1);
   }
-  .editor.visible { max-height: 500px; }
-
+  .editor.visible { max-height:500px; }
   .line-nums { background:#f5f5f5; border-right:2px solid #ebebeb; padding:24px 0; text-align:center; }
   .ln { font-size:12px; color:#ccc; line-height:2; user-select:none; }
   .code-area { padding:24px 20px; overflow-x:auto; }
-
   .code-line { font-size:13px; line-height:2; white-space:nowrap; opacity:0; }
   .editor.visible .code-line:nth-child(1)  { animation:appear 0s forwards 0.1s; }
   .editor.visible .code-line:nth-child(2)  { animation:appear 0s forwards 0.2s; }
@@ -103,9 +96,7 @@
     margin-left:-6px; border-radius:2px; display:block;
   }
 
-  /* Photo section */
   .photo-section { padding:2rem; text-align:center; }
-
   .output-label {
     display:inline-block;
     background:linear-gradient(135deg,var(--pink),var(--coral));
@@ -113,86 +104,137 @@
     padding:5px 16px; border-radius:100px; margin-bottom:1.5rem; font-weight:600;
   }
 
-  .slideshow { position:relative; display:inline-block; width:100%; max-width:500px; }
+  .stage {
+    position:relative; width:100%; max-width:500px;
+    margin:0 auto; min-height:320px;
+    display:flex; align-items:center; justify-content:center;
+  }
 
-  .slide { display:none; position:relative; }
-  .slide.active { display:block; }
+  .slide {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.6s ease;
+  }
+  .slide.active { opacity:1; pointer-events:auto; }
   .slide::before,.slide::after {
     content:''; position:absolute; width:28px; height:28px;
     border-style:solid; border-color:var(--pink); z-index:2; pointer-events:none;
   }
-  .slide::before { top:-6px; left:-6px; border-width:3px 0 0 3px; border-radius:4px 0 0 0; }
-  .slide::after  { bottom:-6px; right:-6px; border-width:0 3px 3px 0; border-radius:0 0 4px 0; }
-
+  .slide::before { top:0; left:0; border-width:3px 0 0 3px; border-radius:4px 0 0 0; }
+  .slide::after  { bottom:0; right:0; border-width:0 3px 3px 0; border-radius:0 0 4px 0; }
   .slide img {
-    display:block; width:100%; max-height:400px; border-radius:16px;
+    display:block; width:100%; max-height:320px; border-radius:16px;
     box-shadow:0 12px 50px rgba(255,107,157,0.25), 0 4px 16px rgba(0,0,0,0.08);
     object-fit:contain;
   }
-  .slide.last img { animation: growUp 5s ease forwards; }
-  @keyframes growUp { 0%{transform:scale(1)} 100%{transform:scale(1.18)} }
-  .slide.fade-in { animation: fadeSlide 0.6s ease forwards; }
-  @keyframes fadeSlide { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
+  .slide.last-photo img { animation:growUp 5s ease forwards; }
+  @keyframes growUp { 0%{transform:scale(1)} 100%{transform:scale(1.1)} }
 
-  .dots-indicator { display:flex; justify-content:center; gap:8px; margin-top:16px; }
-  .dot-ind { width:8px; height:8px; border-radius:50%; background:#ddd; transition:background 0.3s; }
-  .dot-ind.active { background:var(--pink); }
+  .text-slide {
+    position:absolute; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    opacity:0; pointer-events:none;
+    transition:opacity 0.6s ease;
+  }
+  .text-slide.active { opacity:1; }
 
-  .sticker { position:absolute; font-size:2rem; animation:wiggle 2s ease-in-out infinite; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); z-index:3; }
+  /* 텍스트 내용 */
+  .text-content {
+    font-family:'Noto Serif KR',serif;
+    font-weight:900;
+    font-size:3rem;
+    text-align:center;
+    line-height:1.7;
+  }
+  .text-content .point {
+    background:linear-gradient(135deg,var(--pink),var(--purple));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+
+  /* ── 마흔 강조 효과 ── */
+  .mahon-wrap {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* 동그라미 SVG */
+  .mahon-circle {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 130%; height: 150%;
+    pointer-events: none;
+    overflow: visible;
+  }
+  .mahon-circle circle {
+    fill: none;
+    stroke: var(--red);
+    stroke-width: 4;
+    stroke-dasharray: 320;
+    stroke-dashoffset: 320;
+    stroke-linecap: round;
+  }
+  .mahon-circle.draw circle {
+    animation: drawCircle 0.7s ease forwards 0.2s;
+  }
+  @keyframes drawCircle {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* 밑줄 1 */
+  .underline-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .u-line {
+    position: absolute;
+    left: -4px; right: -4px;
+    height: 4px;
+    background: var(--red);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .u-line.u1 { bottom: -6px; }
+  .u-line.u2 { bottom: -14px; }
+
+  .u-line.draw {
+    animation: drawLine 0.4s ease forwards;
+  }
+  .u-line.u2.draw {
+    animation: drawLine 0.4s ease forwards 0.2s;
+  }
+  @keyframes drawLine {
+    to { transform: scaleX(1); }
+  }
+
+  /* 생일축하해 */
+  .birthday-content {
+    font-family:'Jua',sans-serif;
+    font-size:3rem;
+    text-align:center;
+  }
+  .birthday-content .gradient {
+    background:linear-gradient(135deg,var(--pink),var(--coral),var(--yellow));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  }
+
+  .sticker { position:absolute; font-size:2rem; animation:wiggle 2s ease-in-out infinite; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); z-index:3; pointer-events:none; }
   .sticker-1{top:-18px;right:-10px;animation-delay:0s}
   .sticker-2{bottom:-18px;left:-10px;animation-delay:0.5s}
   .sticker-3{top:40%;right:-24px;animation-delay:1s}
   @keyframes wiggle { 0%,100%{transform:rotate(-8deg) scale(1)} 50%{transform:rotate(8deg) scale(1.1)} }
 
-  /* Message */
-  .message { margin-top:2rem; text-align:center; }
-  .lines-wrap { display:flex; flex-direction:column; align-items:center; gap:0.4rem; margin-bottom:1.2rem; }
-
-  .line-item {
-    font-family:'Noto Serif KR',serif; font-weight:900; font-size:2.2rem;
-    opacity:0; transform:translateY(16px); color:var(--dark);
-  }
-  .line-item:nth-child(1) { animation:lineUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards 0.5s; }
-  .line-item:nth-child(2) { animation:lineUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards 1.1s; }
-  .line-item:nth-child(3) { animation:lineUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards 1.7s; }
-  @keyframes lineUp { to { opacity:1; transform:translateY(0); } }
-
-  .line-item .point {
-    background:linear-gradient(135deg,var(--pink),var(--purple));
-    -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
-  }
-
-  .sparkle-wrap { position:relative; display:inline-block; }
-  .sparkle-wrap::before,.sparkle-wrap::after {
-    content:'✨'; position:absolute; font-size:1.5rem; opacity:0;
-    animation:sparkPop 0.5s ease forwards 2.3s;
-  }
-  .sparkle-wrap::before { left:-2.5rem; top:50%; transform:translateY(-50%); }
-  .sparkle-wrap::after  { right:-2.5rem; top:50%; transform:translateY(-50%); animation-delay:2.4s; }
-  @keyframes sparkPop {
-    0%{opacity:0;transform:translateY(-50%) scale(0)}
-    60%{opacity:1;transform:translateY(-50%) scale(1.3)}
-    100%{opacity:1;transform:translateY(-50%) scale(1)}
-  }
-
-  /* 생일 축하해 */
-  .birthday-msg {
-    font-family:'Noto Serif KR',serif; font-weight:900; font-size:1.8rem;
-    color:var(--dark); margin-top:1rem;
-    opacity:0; transform:scale(0.8);
-    animation:popBounce 0.7s cubic-bezier(0.16,1,0.3,1) forwards 2.8s;
-  }
-  @keyframes popBounce {
-    0%{opacity:0;transform:scale(0.8)}
-    70%{transform:scale(1.05)}
-    100%{opacity:1;transform:scale(1)}
-  }
+  .dots-indicator { display:flex; justify-content:center; gap:8px; margin-top:20px; }
+  .dot-ind { width:8px; height:8px; border-radius:50%; background:#ddd; transition:background 0.3s; }
+  .dot-ind.active { background:var(--pink); }
 
   .flash-overlay {
     position:absolute; inset:0; background:white; opacity:0;
-    pointer-events:none; border-radius:24px;
-    animation:flashIn 0.4s ease forwards 2.2s; z-index:10;
+    pointer-events:none; border-radius:24px; z-index:10;
   }
+  .flash-overlay.flash { animation:flashIn 0.4s ease forwards; }
   @keyframes flashIn { 0%{opacity:0} 30%{opacity:0.7} 100%{opacity:0} }
 
   .cursor {
@@ -215,9 +257,8 @@
 <div class="confetti-wrap" id="confetti"></div>
 
 <div class="card">
-  <div class="flash-overlay"></div>
+  <div class="flash-overlay" id="flash"></div>
 
-  <!-- 클릭하면 코드 보임 -->
   <div class="browser-bar" onclick="toggleCode()">
     <div class="dots">
       <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
@@ -253,42 +294,70 @@
   <div class="photo-section">
     <div class="output-label">✨ RENDERED OUTPUT</div>
 
-    <div class="slideshow">
+    <div class="stage" id="stage">
       <span class="sticker sticker-1">🎈</span>
       <span class="sticker sticker-2">🎁</span>
       <span class="sticker sticker-3">⭐</span>
-      <div class="slide active" id="slide-0"><img src="photo.jpg" alt="사진1"></div>
-      <div class="slide" id="slide-1"><img src="photo1.jpg" alt="사진2"></div>
-      <div class="slide" id="slide-2"><img src="photo2.jpg" alt="사진3"></div>
-      <div class="slide last" id="slide-3"><img src="photo3.jpg" alt="사진4"></div>
-    </div>
 
-    <div class="dots-indicator">
-      <div class="dot-ind active" id="ind-0"></div>
-      <div class="dot-ind" id="ind-1"></div>
-      <div class="dot-ind" id="ind-2"></div>
-      <div class="dot-ind" id="ind-3"></div>
-    </div>
+      <!-- 사진 4장 -->
+      <div class="slide active" data-index="0"><img src="photo.jpg" alt="사진1"></div>
+      <div class="slide" data-index="1"><img src="photo1.jpg" alt="사진2"></div>
+      <div class="slide" data-index="2"><img src="photo2.jpg" alt="사진3"></div>
+      <div class="slide last-photo" data-index="3"><img src="photo3.jpg" alt="사진4"></div>
 
-    <div class="message">
-      <div class="lines-wrap">
-        <div class="line-item"><span class="point">중</span> 요한건</div>
-        <div class="line-item"><span class="point">꺽</span> 이지 않는</div>
-        <div class="line-item">
-          <div class="sparkle-wrap"><span class="point">마</span> 흔</div>
+      <!-- 텍스트 슬라이드 4 -->
+      <div class="text-slide" data-index="4">
+        <div class="text-content"><span class="point">중</span> 요한건</div>
+      </div>
+
+      <!-- 텍스트 슬라이드 5 -->
+      <div class="text-slide" data-index="5">
+        <div class="text-content">
+          <span class="point">중</span> 요한건<br>
+          <span class="point">꺽</span> 이지 않는
         </div>
       </div>
-      <div class="birthday-msg">생일축하해 🎂🥳</div>
+
+      <!-- 텍스트 슬라이드 6 - 마흔 강조 -->
+      <div class="text-slide" data-index="6">
+        <div class="text-content">
+          <span class="point">중</span> 요한건<br>
+          <span class="point">꺽</span> 이지 않는<br>
+          <div class="underline-wrap" id="underlineWrap">
+            <span class="mahon-wrap" id="mahonWrap">
+              <span class="point">마</span> 흔
+              <svg class="mahon-circle" id="mahonCircle" viewBox="0 0 100 60">
+                <ellipse cx="50" cy="30" rx="48" ry="28"
+                  fill="none" stroke="#e8192c" stroke-width="3.5"
+                  stroke-dasharray="330" stroke-dashoffset="330"
+                  stroke-linecap="round" id="circleEl"/>
+              </svg>
+            </span>
+            <div class="u-line u1" id="uline1"></div>
+            <div class="u-line u2" id="uline2"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 생일축하해 -->
+      <div class="text-slide" data-index="7">
+        <div class="birthday-content"><span class="gradient">생일축하해!</span></div>
+      </div>
+    </div>
+
+    <div class="dots-indicator" id="dotsWrap">
+      <div class="dot-ind active"></div>
+      <div class="dot-ind"></div>
+      <div class="dot-ind"></div>
+      <div class="dot-ind"></div>
     </div>
   </div>
 </div>
 
 <script>
-  // 코드 토글
   function toggleCode() {
     const editor = document.getElementById('editor');
     editor.classList.toggle('visible');
-    // 코드라인 애니메이션 리셋
     if (editor.classList.contains('visible')) {
       editor.querySelectorAll('.code-line').forEach(el => {
         el.style.opacity = '0';
@@ -297,34 +366,61 @@
     }
   }
 
-  // 슬라이드쇼
-  const slides = document.querySelectorAll('.slide');
-  const indicators = document.querySelectorAll('.dot-ind');
-  const durations = [3000, 3000, 3000, 5000];
+  const allSlides = document.querySelectorAll('.slide, .text-slide');
+  const dotInds = document.querySelectorAll('.dot-ind');
+  // 사진0(3s) 사진1(3s) 사진2(3s) 사진3(5s) 텍스트4(3s) 텍스트5(3s) 텍스트6(3s) 생일(∞)
+  const durations = [3000, 3000, 3000, 5000, 3000, 3000, 3000, null];
   let current = 0;
 
-  function goToSlide(next) {
-    slides[current].classList.remove('active');
-    indicators[current].classList.remove('active');
+  function goTo(next) {
+    allSlides[current].classList.remove('active');
+    if (current < 4) dotInds[current]?.classList.remove('active');
+
     current = next;
-    slides[current].classList.add('active', 'fade-in');
-    indicators[current].classList.add('active');
-    setTimeout(() => slides[current].classList.remove('fade-in'), 600);
-    scheduleNext();
+    allSlides[current].classList.add('active');
+    if (current < 4) dotInds[current]?.classList.add('active');
+
+    document.getElementById('dotsWrap').style.opacity = current >= 4 ? '0' : '1';
+
+    const flash = document.getElementById('flash');
+    flash.classList.add('flash');
+    setTimeout(() => flash.classList.remove('flash'), 500);
+
+    // 생일축하해 도착
+    if (current === 7) {
+      spawnConfetti(); spawnConfetti();
+      return;
+    }
+
+    // 마흔 슬라이드 - 0.5초 후 밑줄 + 동그라미 그리기
+    if (current === 6) {
+      setTimeout(() => {
+        document.getElementById('uline1').classList.add('draw');
+        document.getElementById('uline2').classList.add('draw');
+        // 밑줄 후 동그라미
+        setTimeout(() => {
+          const circle = document.getElementById('circleEl');
+          circle.style.animation = 'drawCircle 0.8s ease forwards';
+        }, 500);
+      }, 500);
+    }
+
+    if (durations[current]) {
+      setTimeout(() => goTo(current + 1), durations[current]);
+    }
   }
 
-  function scheduleNext() {
-    const next = (current + 1) % slides.length;
-    setTimeout(() => goToSlide(next), durations[current]);
-  }
+  // drawCircle 키프레임 동적 추가
+  const style = document.createElement('style');
+  style.textContent = `@keyframes drawCircle { to { stroke-dashoffset: 0; } }`;
+  document.head.appendChild(style);
 
-  scheduleNext();
+  setTimeout(() => goTo(1), durations[0]);
 
-  // 폭죽
   function spawnConfetti() {
     const wrap = document.getElementById('confetti');
     const colors = ['#ff6b9d','#ffd93d','#6bcb77','#4d96ff','#c77dff','#ff8c69'];
-    for (let i = 0; i < 100; i++) {
+    for (let i = 0; i < 120; i++) {
       setTimeout(() => {
         const c = document.createElement('div');
         c.className = 'c';
@@ -337,12 +433,11 @@
         c.style.animationDelay = (Math.random() * 0.5) + 's';
         wrap.appendChild(c);
         setTimeout(() => c.remove(), 4000);
-      }, i * 30);
+      }, i * 25);
     }
   }
 
   spawnConfetti();
-  setTimeout(spawnConfetti, 3000);
   setInterval(spawnConfetti, 3000);
 </script>
 </body>
