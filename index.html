@@ -305,44 +305,14 @@
       <div class="slide" data-index="2"><img src="photo2.jpg" alt="사진3"></div>
       <div class="slide last-photo" data-index="3"><img src="photo3.jpg" alt="사진4"></div>
 
-      <!-- 텍스트 슬라이드 4 -->
+      <!-- 텍스트 슬라이드 -->
       <div class="text-slide" data-index="4">
-        <div class="text-content"><span class="point">중</span> 요한건</div>
+        <div class="text-content" style="font-size:2.8rem; color:#2d2d2d;">근데.....</div>
       </div>
-
-      <!-- 텍스트 슬라이드 5 -->
       <div class="text-slide" data-index="5">
-        <div class="text-content">
-          <span class="point">중</span> 요한건<br>
-          <span class="point">꺽</span> 이지 않는
-        </div>
+        <div class="birthday-content"><span class="gradient">생일은 축하해 :)</span></div>
       </div>
 
-      <!-- 텍스트 슬라이드 6 - 마흔 강조 -->
-      <div class="text-slide" data-index="6">
-        <div class="text-content">
-          <span class="point">중</span> 요한건<br>
-          <span class="point">꺽</span> 이지 않는<br>
-          <div class="underline-wrap" id="underlineWrap">
-            <span class="mahon-wrap" id="mahonWrap">
-              <span class="point">마</span> 흔
-              <svg class="mahon-circle" id="mahonCircle" viewBox="0 0 100 60">
-                <ellipse cx="50" cy="30" rx="48" ry="28"
-                  fill="none" stroke="#e8192c" stroke-width="3.5"
-                  stroke-dasharray="330" stroke-dashoffset="330"
-                  stroke-linecap="round" id="circleEl"/>
-              </svg>
-            </span>
-            <div class="u-line u1" id="uline1"></div>
-            <div class="u-line u2" id="uline2"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 생일축하해 -->
-      <div class="text-slide" data-index="7">
-        <div class="birthday-content"><span class="gradient">생일축하해!</span></div>
-      </div>
     </div>
 
     <div class="dots-indicator" id="dotsWrap">
@@ -368,8 +338,8 @@
 
   const allSlides = document.querySelectorAll('.slide, .text-slide');
   const dotInds = document.querySelectorAll('.dot-ind');
-  // 사진0(3s) 사진1(3s) 사진2(3s) 사진3(5s) 텍스트4(3s) 텍스트5(3s) 텍스트6(3s) 생일(∞)
-  const durations = [3000, 3000, 3000, 5000, 3000, 3000, 3000, null];
+  // 사진0(3s) 사진1(3s) 사진2(3s) 사진3(5s) 근데(3s) 생일축하해(∞)
+  const durations = [3000, 3000, 3000, 5000, 3000, null];
   let current = 0;
 
   function goTo(next) {
@@ -387,22 +357,9 @@
     setTimeout(() => flash.classList.remove('flash'), 500);
 
     // 생일축하해 도착
-    if (current === 7) {
+    if (current === 5) {
       spawnConfetti(); spawnConfetti();
       return;
-    }
-
-    // 마흔 슬라이드 - 0.5초 후 밑줄 + 동그라미 그리기
-    if (current === 6) {
-      setTimeout(() => {
-        document.getElementById('uline1').classList.add('draw');
-        document.getElementById('uline2').classList.add('draw');
-        // 밑줄 후 동그라미
-        setTimeout(() => {
-          const circle = document.getElementById('circleEl');
-          circle.style.animation = 'drawCircle 0.8s ease forwards';
-        }, 500);
-      }, 500);
     }
 
     if (durations[current]) {
