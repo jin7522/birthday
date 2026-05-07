@@ -58,7 +58,6 @@
   .dots { display:flex; gap:7px; }
   .dot { width:13px; height:13px; border-radius:50%; }
   .dot.r{background:#ff5f57} .dot.y{background:#febc2e} .dot.g{background:#28c840}
-
   .url-bar {
     flex:1; background:white; border:1.5px solid #ddd; border-radius:8px;
     padding:6px 14px; font-size:12px; color:var(--gray);
@@ -94,7 +93,7 @@
 
   /* Photo section */
   .photo-section {
-    padding: 2rem; text-align:center; opacity:0; transform:scale(0.95);
+    padding:2rem; text-align:center; opacity:0; transform:scale(0.95);
     animation:popIn 0.8s cubic-bezier(0.16,1,0.3,1) forwards 4s;
   }
   @keyframes popIn { to { opacity:1; transform:scale(1); } }
@@ -106,21 +105,74 @@
     padding:5px 16px; border-radius:100px; margin-bottom:1.5rem; font-weight:600;
   }
 
-  .photo-wrap { position:relative; display:inline-block; }
-  .photo-wrap::before,.photo-wrap::after {
+  /* Slideshow */
+  .slideshow {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .slide {
+    display: none;
+    position: relative;
+  }
+
+  .slide.active {
+    display: block;
+  }
+
+  .slide::before, .slide::after {
     content:''; position:absolute; width:28px; height:28px;
     border-style:solid; border-color:var(--pink); z-index:2;
+    pointer-events: none;
   }
-  .photo-wrap::before { top:-6px; left:-6px; border-width:3px 0 0 3px; border-radius:4px 0 0 0; }
-  .photo-wrap::after  { bottom:-6px; right:-6px; border-width:0 3px 3px 0; border-radius:0 0 4px 0; }
+  .slide::before { top:-6px; left:-6px; border-width:3px 0 0 3px; border-radius:4px 0 0 0; }
+  .slide::after  { bottom:-6px; right:-6px; border-width:0 3px 3px 0; border-radius:0 0 4px 0; }
 
-  .photo-wrap img {
-    display:block; max-width:100%; max-height:400px; border-radius:16px;
-    box-shadow:0 12px 50px rgba(255,107,157,0.25), 0 4px 16px rgba(0,0,0,0.08);
-    object-fit:contain;
+  .slide img {
+    display: block;
+    width: 100%;
+    max-height: 400px;
+    border-radius: 16px;
+    box-shadow: 0 12px 50px rgba(255,107,157,0.25), 0 4px 16px rgba(0,0,0,0.08);
+    object-fit: contain;
+    transition: transform 0.5s ease, opacity 0.5s ease;
   }
 
-  .sticker { position:absolute; font-size:2rem; animation:wiggle 2s ease-in-out infinite; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); }
+  /* 마지막 사진 점점 커지는 효과 */
+  .slide.last img {
+    animation: growUp 5s ease forwards;
+  }
+  @keyframes growUp {
+    0%   { transform: scale(1); }
+    100% { transform: scale(1.18); }
+  }
+
+  /* 사진 전환 페이드 */
+  .slide.fade-in {
+    animation: fadeSlide 0.6s ease forwards;
+  }
+  @keyframes fadeSlide {
+    from { opacity:0; transform: scale(0.96); }
+    to   { opacity:1; transform: scale(1); }
+  }
+
+  /* 사진 인디케이터 */
+  .dots-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .dot-ind {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #ddd;
+    transition: background 0.3s;
+  }
+  .dot-ind.active { background: var(--pink); }
+
+  .sticker { position:absolute; font-size:2rem; animation:wiggle 2s ease-in-out infinite; filter:drop-shadow(2px 2px 4px rgba(0,0,0,0.1)); z-index:3; }
   .sticker-1{top:-18px;right:-10px;animation-delay:0s}
   .sticker-2{bottom:-18px;left:-10px;animation-delay:0.5s}
   .sticker-3{top:40%;right:-24px;animation-delay:1s}
@@ -133,7 +185,6 @@
     opacity: 0;
     animation: appear 0s forwards 5s;
   }
-
   .lines-wrap {
     display: flex;
     flex-direction: column;
@@ -141,33 +192,19 @@
     gap: 0.4rem;
     margin-bottom: 1.2rem;
   }
-
   .line-item {
     font-family: 'Noto Serif KR', serif;
     font-weight: 900;
+    font-size: 2.2rem;
     opacity: 0;
     transform: translateY(16px);
     color: var(--dark);
     position: relative;
   }
-
-  /* 동일한 글씨 크기, 순서대로 등장 */
-  .line-item:nth-child(1) {
-    font-size: 2.2rem;
-    animation: lineUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards 5.2s;
-  }
-  .line-item:nth-child(2) {
-    font-size: 2.2rem;
-    animation: lineUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards 5.8s;
-  }
-  .line-item:nth-child(3) {
-    font-size: 2.2rem;
-    animation: lineUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards 6.4s;
-  }
-
-  @keyframes lineUp {
-    to { opacity:1; transform:translateY(0); }
-  }
+  .line-item:nth-child(1) { animation: lineUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards 5.2s; }
+  .line-item:nth-child(2) { animation: lineUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards 5.8s; }
+  .line-item:nth-child(3) { animation: lineUp 0.6s cubic-bezier(0.16,1,0.3,1) forwards 6.4s; }
+  @keyframes lineUp { to { opacity:1; transform:translateY(0); } }
 
   .line-item .point {
     background: linear-gradient(135deg, var(--pink), var(--purple));
@@ -176,61 +213,26 @@
     background-clip: text;
   }
 
-  /* 반짝임 효과 - 3단락 다 나온 후 */
-  .sparkle-wrap {
-    position: relative;
-    display: inline-block;
-  }
-
-  .sparkle-wrap::before,
-  .sparkle-wrap::after {
-    content: '✨';
-    position: absolute;
-    font-size: 1.5rem;
-    opacity: 0;
+  .sparkle-wrap { position:relative; display:inline-block; }
+  .sparkle-wrap::before, .sparkle-wrap::after {
+    content:'✨'; position:absolute; font-size:1.5rem; opacity:0;
     animation: sparkPop 0.5s ease forwards 7.2s;
   }
-  .sparkle-wrap::before { left: -2.5rem; top: 50%; transform: translateY(-50%); }
-  .sparkle-wrap::after  { right: -2.5rem; top: 50%; transform: translateY(-50%); animation-delay: 7.3s; }
-
+  .sparkle-wrap::before { left:-2.5rem; top:50%; transform:translateY(-50%); }
+  .sparkle-wrap::after  { right:-2.5rem; top:50%; transform:translateY(-50%); animation-delay:7.3s; }
   @keyframes sparkPop {
-    0%   { opacity:0; transform:translateY(-50%) scale(0); }
-    60%  { opacity:1; transform:translateY(-50%) scale(1.3); }
-    100% { opacity:1; transform:translateY(-50%) scale(1); }
+    0%  { opacity:0; transform:translateY(-50%) scale(0); }
+    60% { opacity:1; transform:translateY(-50%) scale(1.3); }
+    100%{ opacity:1; transform:translateY(-50%) scale(1); }
   }
 
-  /* 전체 반짝 flash */
   .flash-overlay {
-    position: absolute;
-    inset: 0;
-    background: white;
-    opacity: 0;
-    pointer-events: none;
-    border-radius: 24px;
-    animation: flashIn 0.4s ease forwards 7.1s;
-    z-index: 10;
+    position:absolute; inset:0; background:white; opacity:0;
+    pointer-events:none; border-radius:24px;
+    animation: flashIn 0.4s ease forwards 7.1s; z-index:10;
   }
-  @keyframes flashIn {
-    0%   { opacity: 0; }
-    30%  { opacity: 0.7; }
-    100% { opacity: 0; }
-  }
+  @keyframes flashIn { 0%{opacity:0} 30%{opacity:0.7} 100%{opacity:0} }
 
-  /* ㅋㅋㅋ */
-  .kk {
-    font-family: 'Fira Code', monospace;
-    font-size: 13px;
-    color: var(--gray);
-    letter-spacing: 1px;
-    white-space: nowrap;
-    overflow: hidden;
-    width: 0;
-    display: inline-block;
-    animation: typing 1.5s steps(27) forwards 7.6s;
-  }
-  @keyframes typing { to { width: 100%; } }
-
-  /* cursor */
   .cursor {
     display:inline-block; width:2px; height:14px;
     background:var(--pink); vertical-align:middle; margin-left:2px;
@@ -238,7 +240,6 @@
   }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-  /* confetti */
   .confetti-wrap { position:fixed; inset:0; pointer-events:none; z-index:999; }
   .c { position:absolute; top:-20px; border-radius:2px; animation:fall linear forwards; }
   @keyframes fall { to { transform:translateY(110vh) rotate(720deg); opacity:0; } }
@@ -288,33 +289,70 @@
 
   <div class="photo-section">
     <div class="output-label">✨ RENDERED OUTPUT</div>
-    <div class="photo-wrap">
+
+    <div class="slideshow">
       <span class="sticker sticker-1">🎈</span>
       <span class="sticker sticker-2">🎁</span>
       <span class="sticker sticker-3">⭐</span>
-      <img src="photo.jpg" alt="Young Kim Birthday">
+
+      <div class="slide active" id="slide-0">
+        <img src="photo.jpg" alt="사진1">
+      </div>
+      <div class="slide" id="slide-1">
+        <img src="photo1.jpg" alt="사진2">
+      </div>
+      <div class="slide" id="slide-2">
+        <img src="photo2.jpg" alt="사진3">
+      </div>
+      <div class="slide last" id="slide-3">
+        <img src="photo3.jpg" alt="사진4">
+      </div>
+    </div>
+
+    <div class="dots-indicator">
+      <div class="dot-ind active" id="ind-0"></div>
+      <div class="dot-ind" id="ind-1"></div>
+      <div class="dot-ind" id="ind-2"></div>
+      <div class="dot-ind" id="ind-3"></div>
     </div>
 
     <div class="message">
       <div class="lines-wrap">
+        <div class="line-item"><span class="point">중</span> 요한건</div>
+        <div class="line-item"><span class="point">꺽</span> 이지 않는</div>
         <div class="line-item">
-          <span class="point">중</span> 요한건
-        </div>
-        <div class="line-item">
-          <span class="point">꺽</span> 이지 않는
-        </div>
-        <div class="line-item">
-          <div class="sparkle-wrap">
-            <span class="point">마</span> 흔
-          </div>
+          <div class="sparkle-wrap"><span class="point">마</span> 흔</div>
         </div>
       </div>
-
     </div>
   </div>
 </div>
 
 <script>
+  const slides = document.querySelectorAll('.slide');
+  const indicators = document.querySelectorAll('.dot-ind');
+  const durations = [3000, 3000, 3000, 5000]; // 마지막 5초
+  let current = 0;
+
+  function goToSlide(next) {
+    slides[current].classList.remove('active');
+    indicators[current].classList.remove('active');
+    current = next;
+    slides[current].classList.add('active', 'fade-in');
+    indicators[current].classList.add('active');
+    setTimeout(() => slides[current].classList.remove('fade-in'), 600);
+    scheduleNext();
+  }
+
+  function scheduleNext() {
+    const next = (current + 1) % slides.length;
+    setTimeout(() => goToSlide(next), durations[current]);
+  }
+
+  // 첫 슬라이드 시작
+  scheduleNext();
+
+  // 폭죽
   function spawnConfetti() {
     const wrap = document.getElementById('confetti');
     const colors = ['#ff6b9d','#ffd93d','#6bcb77','#4d96ff','#c77dff','#ff8c69'];
@@ -334,9 +372,9 @@
       }, i * 30);
     }
   }
+
   setTimeout(spawnConfetti, 4000);
   setTimeout(spawnConfetti, 7200);
-  // 계속 폭죽 내리기
   setInterval(spawnConfetti, 3000);
 </script>
 </body>
